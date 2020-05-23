@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animalese Test</title>
+    <script type="module" src="./alphabetLoader.js"></script>
+    <script type="module" src="./animaleseSynthesizer.js"></script>
+</head>
+
+<body>
+    <button id="synthesis button">Click Me!</button>
+
+    <script type="module">
+        import { AlphabetLoader } from "./alphabetLoader.js";
+        import { AnimaleseSynthesizer } from "./animaleseSynthesizer.js";
+
+        const AudioContext = (window.AudioContext || window.webkitAudioContext);
+        async function synthesizeAnimalese(text) {
+            const wavPath = "animalese.wav"
+            const wavSecondsPerLetter = 0.15;
+            const outputSecondsPerLetter = 0.075;
+
+            const audioContext = new AudioContext();
+
+            const loader = new AlphabetLoader(wavPath, wavSecondsPerLetter, outputSecondsPerLetter, audioContext);
+            await loader.fetchAlphabetBuffer();
+
+            const animaleseSynthesizer = new AnimaleseSynthesizer(loader, audioContext);
+            const animalese = animaleseSynthesizer.generateAnimaleseFor(text, 0.5);
+
+            const source = audioContext.createBufferSource();
+            source.buffer = animalese;
+            source.connect(audioContext.destination);
+            source.start();
+        }
+
+        const button = document.getElementById("synthesis-button");
+        button.addEventListener("click", () => {
+            synthesizeAnimalese(prompt("Please enter a string you'd like to hear Animalese for."));
+        })
+    </script>
+</body>
+
+</html>
