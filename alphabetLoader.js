@@ -1,4 +1,4 @@
-export class AlphabetLoader {
+class AlphabetLoader {
   static SILENCE = 0;
   static INITIAL_OFFSET = 44;
   static LOWEST_PITCH = 0.2;
@@ -22,7 +22,9 @@ export class AlphabetLoader {
    */
   async fetchAlphabetBuffer() {
     const response = await fetch(this.wavFilepath, { mode: "no-cors" });
+    console.log(response);
     const audioData = await response.arrayBuffer();
+    console.log(audioData);
     const audioBuffer = await this.audioContext.decodeAudioData(audioData);
     this.alphabetBuffer = audioBuffer;
   }

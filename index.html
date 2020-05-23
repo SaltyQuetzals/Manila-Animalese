@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manila Animalese</title>
+    <script src="./alphabetLoader.js"></script>
+    <script src="./animaleseSynthesizer.js"></script>
 </head>
 
 <body>
@@ -19,13 +21,10 @@
     </form>
 
 
-    <script type="module">
-        import { AlphabetLoader } from "./alphabetLoader.js";
-        import { AnimaleseSynthesizer } from "./animaleseSynthesizer.js";
-
+    <script>
         const AudioContext = (window.AudioContext || window.webkitAudioContext);
         async function synthesizeAnimalese(text, pitch) {
-            const wavPath = "animalese.wav"
+            const wavPath = "./animalese.wav"
             const wavSecondsPerLetter = 0.15;
             const outputSecondsPerLetter = 0.075;
 

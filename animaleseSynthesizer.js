@@ -1,4 +1,4 @@
-export class AnimaleseSynthesizer {
+class AnimaleseSynthesizer {
   /**
    * Creates a synthesizer for Animalese text that allows audio to be generated from text.
    */
