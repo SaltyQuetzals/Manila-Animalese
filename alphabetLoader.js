@@ -22,11 +22,9 @@ class AlphabetLoader {
    */
   async fetchAlphabetBuffer() {
     const response = await fetch(this.wavFilepath, { mode: "no-cors" });
-    console.log(response);
     const audioData = await response.arrayBuffer();
-    console.log(audioData);
-    const audioBuffer = await this.audioContext.decodeAudioData(audioData);
-    this.alphabetBuffer = audioBuffer;
+    const alphabetBuffer = await this.audioContext.decodeAudioData(audioData);
+    this.alphabetBuffer = alphabetBuffer;
   }
 
   /**
@@ -42,6 +40,7 @@ class AlphabetLoader {
 
   /**
    * Because the WAV file is expected to be in alphabetical order, calculates the offset for the given alphabetical character within the file.
+   * @param {string} char The character to calculate the offset for.
    */
   calculateStartingOffset(char) {
     this.ensureAlphabetBufferExists();
@@ -52,7 +51,8 @@ class AlphabetLoader {
   }
 
   /**
-   * Ensures that the provided pitch is between LOWEST_PITCH and HIGHEST_PITCH.
+   * Ensures that the provided pitch is between @see {AlphabetLoader.LOWEST_PITCH} and @see {AlphabetLoader.HIGHEST_PITCH}.
+   * @param {number} pitch The pitch to check
    */
   ensurePitchInbounds(pitch) {
     if (
@@ -66,10 +66,29 @@ class AlphabetLoader {
   }
 
   /**
+   * Fills the provided @type {AudioBuffer} with silence on all available channels.
+   * @param {AudioBuffer} buffer The AudioBuffer to fill with silence.
+   */
+  fillBufferWithSilence(buffer) {
+    for (
+      let channelIdx = 0;
+      channelIdx < buffer.numberOfChannels;
+      ++channelIdx
+    ) {
+      const channelBuffer = buffer.getChannelData(channelIdx);
+      channelBuffer.fill(AlphabetLoader.SILENCE);
+    }
+    return buffer;
+  }
+
+  /**
    * Takes a slice of the loaded alphabet audiobuffer at a certain character. If the character is not alphabetic (punctuation, numeric), returns silence.
+   * @param {string} char The character to create an @type {AudioBuffer} for. Must be alphabetic (A-Z)
+   * @param {number} pitch The pitch to modify by.
    */
   createAudioBufferForChar(char, pitch) {
     this.ensureAlphabetBufferExists();
+    this.ensurePitchInbounds();
     const charFrameCount = Math.floor(
       this.alphabetBuffer.sampleRate * this.outputSecondsPerLetter
     );
@@ -80,15 +99,7 @@ class AlphabetLoader {
     );
     if (char < 'A' || char > 'Z') {
       // We can't say this character, return a silent buffer (filled with zeros).
-      for (
-        let channelIdx = 0;
-        channelIdx < charAudioBuffer.numberOfChannels;
-        ++channelIdx
-      ) {
-        const channelBuffer = charAudioBuffer.getChannelData(channelIdx);
-        channelBuffer.fill(AlphabetLoader.SILENCE);
-      }
-      return charAudioBuffer;
+      return this.fillBufferWithSilence(charAudioBuffer);
     }
     const startOffset = this.calculateStartingOffset(char);
     for (

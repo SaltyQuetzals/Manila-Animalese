@@ -22,7 +22,7 @@
 
 
     <script>
-        const AudioContext = (window.AudioContext || window.webkitAudioContext);
+        const AudioContext = (window.AudioContext || window.webkitAudioContext); // Safari-compatibility
         async function synthesizeAnimalese(text, pitch) {
             const wavPath = "./animalese.wav"
             const wavSecondsPerLetter = 0.15;

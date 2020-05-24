@@ -1,6 +1,10 @@
+/**
+ * Takes text, and synthesizes it as something similar to Animalese.
+ */
 class AnimaleseSynthesizer {
   /**
-   * Creates a synthesizer for Animalese text that allows audio to be generated from text.
+   * @param {AlphabetLoader} alphabetLoader The @type {AlphabetLoader} to use in retrieving character audio data.
+   * @param {AudioContext} audioContext The @type {AudioContext} to use when constructing @type {AudioBuffer}s.
    */
   constructor(alphabetLoader, audioContext) {
     this.alphabetLoader = alphabetLoader;
@@ -8,7 +12,8 @@ class AnimaleseSynthesizer {
   }
 
   /**
-   * Concatenates the provided `AudioBuffer`s together. If the `AudioBuffer`s differ in number of channels, will concatenate all the contents up to the minimum channel.
+   * Concatenates the provided @type {AudioBuffer}s together. If the @type {AudioBuffer}s differ in number of channels, will concatenate all the contents up to the minimum channel.
+   * @param {Array<AudioBuffer>} buffers The @type {AudioBuffer}s to concatenate. 
    */
   concatAudioBuffers(buffers) {
     const minNumberOfChannels = buffers
@@ -39,6 +44,8 @@ class AnimaleseSynthesizer {
 
   /**
    * Generates an @type {AudioBuffer} containing an Animalese facsimile for the given text.
+   * @param {string} text The text to create Animalese audio for
+   * @param {number} pitch The pitch at which the audio should be generated.
    */
   generateAnimaleseFor(text, pitch) {
     const buffers = [];
